@@ -33,7 +33,7 @@ export function Overview({
           value={filter.query}
           onChange={(e) => setFilter({ ...filter, query: e.target.value })}
           placeholder="Vogel suchen…"
-          className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-base outline-none focus:border-brand-500 dark:border-stone-700 dark:bg-stone-900"
+          className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2.5 text-base outline-none focus:border-brand-500 dark:border-stone-700 dark:bg-stone-800"
         />
         {!onlyFavorites && (
           <button
@@ -41,7 +41,7 @@ export function Overview({
             className={`tap-shrink relative flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-2.5 text-sm font-medium ${
               filtersOpen
                 ? 'border-brand-600 bg-brand-600 text-white'
-                : 'border-stone-300 bg-white text-stone-700 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300'
+                : 'border-stone-300 bg-white text-stone-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300'
             }`}
           >
             🎚️ Filter

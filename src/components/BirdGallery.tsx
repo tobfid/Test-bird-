@@ -19,7 +19,7 @@ export function BirdGallery({
   if (images.length === 0) return null;
 
   return (
-    <div className="flex gap-2 overflow-x-auto border-b border-stone-200 bg-stone-50 p-2 dark:border-stone-800 dark:bg-stone-950">
+    <div className="flex gap-2 overflow-x-auto border-b border-stone-200 bg-stone-50 p-2 dark:border-stone-700 dark:bg-stone-950">
       {images.map((img) => (
         <button
           key={img.fileTitle}

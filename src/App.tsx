@@ -40,7 +40,7 @@ function App() {
         <div className="flex items-center gap-2.5">
           <span className="text-2xl">🐦</span>
           <div>
-            <h1 className="text-base leading-tight font-bold text-brand-900 dark:text-brand-200">{title}</h1>
+            <h1 className="text-base leading-tight font-bold text-brand-900 dark:text-stone-100">{title}</h1>
             <p className="text-xs text-stone-500 dark:text-stone-400">{subtitle}</p>
           </div>
         </div>

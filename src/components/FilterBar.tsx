@@ -27,7 +27,7 @@ function Chip<T extends string>({
       className={`tap-shrink rounded-full border px-3 py-1.5 text-sm transition-colors ${
         active
           ? 'border-brand-600 bg-brand-600 text-white'
-          : 'border-stone-300 bg-white text-stone-700 hover:border-brand-400 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-300'
+          : 'border-stone-300 bg-white text-stone-700 hover:border-brand-400 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300'
       }`}
     >
       {label}
@@ -49,7 +49,7 @@ export function FilterBar({
   const hasActiveFilters = activeFilterCount(filter) > 0;
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-stone-900">
+    <div className="flex flex-col gap-4 rounded-2xl border border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
       <div>
         <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Lebensraum</p>
         <div className="flex flex-wrap gap-2">

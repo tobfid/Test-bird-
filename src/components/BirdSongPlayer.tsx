@@ -10,7 +10,7 @@ export function BirdSongPlayer({ bird }: { bird: Bird }) {
 
   if (status === 'ready' && song) {
     return (
-      <div className="flex flex-col gap-2 rounded-lg bg-stone-50 p-3 dark:bg-stone-900">
+      <div className="flex flex-col gap-2 rounded-lg bg-stone-50 p-3 dark:bg-stone-800">
         <div className="flex items-center gap-3">
           {song.sonoUrl && (
             <img

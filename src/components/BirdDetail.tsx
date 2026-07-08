@@ -43,7 +43,7 @@ export function BirdDetail({
       onClick={onClose}
     >
       <div
-        className="animate-sheet-in pb-safe flex max-h-[92svh] w-full max-w-2xl flex-col overflow-y-auto rounded-t-3xl bg-white sm:rounded-3xl dark:bg-stone-900"
+        className="animate-sheet-in pb-safe flex max-h-[92svh] w-full max-w-2xl flex-col overflow-y-auto rounded-t-3xl bg-white sm:rounded-3xl dark:bg-stone-800"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center pt-2 sm:hidden">
@@ -55,7 +55,7 @@ export function BirdDetail({
           <button
             onClick={onClose}
             aria-label="Schließen"
-            className="tap-shrink absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-900/90"
+            className="tap-shrink absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-800/90"
           >
             ✕
           </button>
