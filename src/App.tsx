@@ -9,11 +9,18 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 type Tab = 'uebersicht' | 'bestimmen' | 'quiz' | 'favoriten';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'uebersicht', label: 'Übersicht', icon: '📖' },
+  { id: 'uebersicht', label: 'Entdecken', icon: '📖' },
   { id: 'bestimmen', label: 'Bestimmen', icon: '🔍' },
   { id: 'quiz', label: 'Quiz', icon: '🎯' },
   { id: 'favoriten', label: 'Favoriten', icon: '❤️' },
 ];
+
+const TAB_TITLES: Record<Tab, { title: string; subtitle: string }> = {
+  uebersicht: { title: 'Vögel entdecken', subtitle: '62 heimische Arten zum Durchstöbern' },
+  bestimmen: { title: 'Vogel bestimmen', subtitle: 'Schritt für Schritt zur richtigen Art' },
+  quiz: { title: 'Lernquiz', subtitle: 'Übe und werde sicherer im Bestimmen' },
+  favoriten: { title: 'Deine Favoriten', subtitle: 'Gemerkte Arten auf einen Blick' },
+};
 
 function App() {
   const [tab, setTab] = useState<Tab>('uebersicht');
@@ -25,41 +32,28 @@ function App() {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
   }
 
+  const { title, subtitle } = TAB_TITLES[tab];
+
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col">
-      <header className="flex items-start justify-between gap-3 border-b border-stone-200 px-4 py-4 dark:border-stone-800">
-        <div>
-          <h1 className="text-2xl font-bold text-green-800 dark:text-green-400">🐦 Vogelbestimmung Deutschland</h1>
-          <p className="text-sm text-stone-500 dark:text-stone-400">
-            Heimische Vögel entdecken, bestimmen und spielerisch lernen
-          </p>
+      <header className="pt-safe sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-brand-100 bg-cream-50/90 px-4 py-3 backdrop-blur-sm dark:border-brand-950 dark:bg-cream-950/90">
+        <div className="flex items-center gap-2.5">
+          <span className="text-2xl">🐦</span>
+          <div>
+            <h1 className="text-base leading-tight font-bold text-brand-900 dark:text-brand-200">{title}</h1>
+            <p className="text-xs text-stone-500 dark:text-stone-400">{subtitle}</p>
+          </div>
         </div>
         <button
           onClick={() => setShareOpen(true)}
-          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-stone-300 px-3 py-2 text-sm font-medium dark:border-stone-700"
+          aria-label="App teilen"
+          className="tap-shrink flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-lg text-white shadow-sm shadow-brand-900/20"
         >
-          📲 Teilen
+          📲
         </button>
       </header>
 
-      <nav className="sticky top-0 z-10 flex border-b border-stone-200 bg-stone-50/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex-1 border-b-2 px-2 py-3 text-sm font-medium transition ${
-              tab === t.id
-                ? 'border-green-700 text-green-700 dark:text-green-400'
-                : 'border-transparent text-stone-500 dark:text-stone-400'
-            }`}
-          >
-            <span className="mr-1">{t.icon}</span>
-            {t.label}
-          </button>
-        ))}
-      </nav>
-
-      <main className="flex-1 px-4 py-6">
+      <main className="flex-1 px-4 py-5 pb-28">
         {tab === 'uebersicht' && (
           <Overview favorites={favorites} onToggleFavorite={toggleFavorite} onSelectBird={setSelectedBird} />
         )}
@@ -75,11 +69,42 @@ function App() {
             onlyFavorites
           />
         )}
+
+        <p className="mt-10 text-center text-xs text-stone-400 dark:text-stone-600">
+          Bilder & weiterführende Infos von Wikipedia, Gesang von xeno-canto.org. Kein Ersatz für professionelle
+          Artbestimmung.
+        </p>
       </main>
 
-      <footer className="border-t border-stone-200 px-4 py-4 text-center text-xs text-stone-400 dark:border-stone-800">
-        Bilder & weiterführende Infos von Wikipedia. Kein Ersatz für professionelle Artbestimmung.
-      </footer>
+      <nav className="pb-safe sticky bottom-0 z-20 border-t border-brand-100 bg-cream-50/95 backdrop-blur-sm dark:border-brand-950 dark:bg-cream-950/95">
+        <div className="mx-auto flex max-w-5xl">
+          {TABS.map((t) => {
+            const active = tab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className="tap-shrink flex flex-1 flex-col items-center gap-0.5 py-2.5"
+              >
+                <span
+                  className={`flex h-8 w-11 items-center justify-center rounded-full text-lg transition-colors ${
+                    active ? 'bg-brand-100 dark:bg-brand-900' : ''
+                  }`}
+                >
+                  {t.icon}
+                </span>
+                <span
+                  className={`text-[11px] font-medium ${
+                    active ? 'text-brand-800 dark:text-brand-300' : 'text-stone-500 dark:text-stone-400'
+                  }`}
+                >
+                  {t.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
       {selectedBird && (
         <BirdDetail

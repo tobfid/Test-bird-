@@ -40,3 +40,7 @@ export function filterBirds(birds: Bird[], filter: FilterState): Bird[] {
     return true;
   });
 }
+
+export function activeFilterCount(filter: FilterState): number {
+  return filter.habitats.length + filter.colors.length + filter.sizes.length + filter.rarities.length;
+}

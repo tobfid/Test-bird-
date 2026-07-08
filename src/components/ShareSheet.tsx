@@ -32,19 +32,23 @@ export function ShareSheet({ onClose }: { onClose: () => void }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+      className="animate-backdrop-in fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
       onClick={onClose}
     >
       <div
-        className="flex w-full max-w-sm flex-col items-center gap-4 rounded-t-2xl bg-white p-6 text-center sm:rounded-2xl dark:bg-stone-900"
+        className="animate-sheet-in pb-safe flex w-full max-w-sm flex-col items-center gap-4 rounded-t-3xl bg-white p-6 text-center sm:rounded-3xl dark:bg-stone-900"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="flex justify-center pt-1 sm:hidden">
+          <span className="h-1.5 w-10 rounded-full bg-stone-300 dark:bg-stone-700" />
+        </div>
+
         <div className="flex w-full items-center justify-between">
           <h2 className="text-lg font-semibold">App teilen</h2>
           <button
             onClick={onClose}
             aria-label="Schließen"
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800"
+            className="tap-shrink flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 dark:bg-stone-800"
           >
             ✕
           </button>
@@ -66,7 +70,7 @@ export function ShareSheet({ onClose }: { onClose: () => void }) {
           <p className="flex-1 truncate text-left text-sm text-stone-600 dark:text-stone-300">{url}</p>
           <button
             onClick={copyLink}
-            className="shrink-0 rounded-md bg-green-700 px-3 py-1.5 text-sm text-white"
+            className="tap-shrink shrink-0 rounded-md bg-brand-600 px-3 py-1.5 text-sm text-white"
           >
             {copied ? 'Kopiert ✓' : 'Kopieren'}
           </button>

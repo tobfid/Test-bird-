@@ -64,11 +64,18 @@ function toggle<T>(list: T[], value: T): T[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
 
+function scopeSummary(scope: QuizScope): string {
+  const rarityPart = scope.rarities.length === 0 ? 'Alle Häufigkeiten' : scope.rarities.map((r) => RARITY_LABEL[r]).join(', ');
+  const familyPart = scope.family === ALL_FAMILIES ? 'alle Familien' : scope.family;
+  return `${rarityPart} · ${familyPart}`;
+}
+
 export function Quiz() {
   const [scope, setScope] = useLocalStorage<QuizScope>('vogelapp-quiz-scope', defaultScope);
   const [stats, setStats] = useLocalStorage<QuizStats>('vogelapp-quiz-stats', {});
   const [sessionScore, setSessionScore] = useState({ correct: 0, total: 0 });
   const [selected, setSelected] = useState<string | null>(null);
+  const [scopeOpen, setScopeOpen] = useState(false);
 
   const pool = useMemo(() => poolFor(scope), [scope]);
   const [question, setQuestion] = useState(() => (pool.length >= MIN_POOL_SIZE ? buildQuestion(stats, pool) : null));
@@ -110,79 +117,93 @@ export function Quiz() {
   }
 
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6">
+    <div className="mx-auto flex max-w-xl flex-col gap-5">
       <div>
-        <h2 className="text-xl font-semibold">Lernquiz</h2>
+        <h2 className="text-xl font-semibold text-brand-900 dark:text-brand-200">🎯 Lernquiz</h2>
         <p className="text-stone-500 dark:text-stone-400">
           Erkenne den Vogel anhand des Fotos. Am schnellsten lernst du, wenn du erst die häufigsten Arten sicher
-          beherrschst und dich dann Schritt für Schritt vorarbeitest.
+          beherrschst und dich dann vorarbeitest.
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-lg border border-stone-200 p-3 dark:border-stone-800">
-        <div>
-          <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Häufigkeit</p>
-          <div className="flex flex-wrap gap-2">
-            {RARITIES.map((r) => (
-              <button
-                key={r}
-                onClick={() => setScope((s) => ({ ...s, rarities: toggle(s.rarities, r) }))}
-                className={`rounded-full border px-3 py-1 text-sm ${
-                  scope.rarities.includes(r)
-                    ? 'border-green-700 bg-green-700 text-white'
-                    : 'border-stone-300 dark:border-stone-700'
-                }`}
-              >
-                {RARITY_LABEL[r]}
-              </button>
-            ))}
-            {scope.rarities.length > 0 && (
-              <button
-                onClick={() => setScope((s) => ({ ...s, rarities: [] }))}
-                className="rounded-full border border-stone-300 px-3 py-1 text-sm text-stone-500 dark:border-stone-700 dark:text-stone-400"
-              >
-                Alle
-              </button>
-            )}
+      <div className="rounded-2xl border border-stone-200 dark:border-stone-800">
+        <button
+          onClick={() => setScopeOpen((o) => !o)}
+          className="tap-shrink flex w-full items-center justify-between gap-2 px-4 py-3 text-left"
+        >
+          <div>
+            <p className="text-xs text-stone-500 dark:text-stone-400">Lern-Auswahl</p>
+            <p className="text-sm font-medium">{scopeSummary(scope)}</p>
           </div>
-        </div>
-        <label className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Vogelfamilie</span>
-          <select
-            value={scope.family}
-            onChange={(e) => setScope((s) => ({ ...s, family: e.target.value }))}
-            className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-900"
-          >
-            {FAMILY_OPTIONS.map((f) => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
-          </select>
-        </label>
+          <span className="text-stone-400">{scopeOpen ? '▲' : '▼'}</span>
+        </button>
+        {scopeOpen && (
+          <div className="animate-sheet-in flex flex-col gap-3 border-t border-stone-200 p-4 dark:border-stone-800">
+            <div>
+              <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Häufigkeit</p>
+              <div className="flex flex-wrap gap-2">
+                {RARITIES.map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setScope((s) => ({ ...s, rarities: toggle(s.rarities, r) }))}
+                    className={`tap-shrink rounded-full border px-3 py-1 text-sm ${
+                      scope.rarities.includes(r)
+                        ? 'border-brand-600 bg-brand-600 text-white'
+                        : 'border-stone-300 dark:border-stone-700'
+                    }`}
+                  >
+                    {RARITY_LABEL[r]}
+                  </button>
+                ))}
+                {scope.rarities.length > 0 && (
+                  <button
+                    onClick={() => setScope((s) => ({ ...s, rarities: [] }))}
+                    className="tap-shrink rounded-full border border-stone-300 px-3 py-1 text-sm text-stone-500 dark:border-stone-700 dark:text-stone-400"
+                  >
+                    Alle
+                  </button>
+                )}
+              </div>
+            </div>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Vogelfamilie</span>
+              <select
+                value={scope.family}
+                onChange={(e) => setScope((s) => ({ ...s, family: e.target.value }))}
+                className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-900"
+              >
+                {FAMILY_OPTIONS.map((f) => (
+                  <option key={f} value={f}>
+                    {f}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-around rounded-lg bg-stone-100 p-3 text-center dark:bg-stone-800">
+      <div className="flex justify-around rounded-2xl bg-brand-50 p-3 text-center dark:bg-brand-950">
         <div>
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold text-brand-900 dark:text-brand-200">
             {sessionScore.correct}/{sessionScore.total}
           </p>
           <p className="text-xs text-stone-500 dark:text-stone-400">diese Runde</p>
         </div>
         <div>
-          <p className="text-lg font-semibold">{masteredCount}</p>
+          <p className="text-lg font-semibold text-brand-900 dark:text-brand-200">{masteredCount}</p>
           <p className="text-xs text-stone-500 dark:text-stone-400">von {pool.length} gemeistert</p>
         </div>
       </div>
 
       {!question ? (
-        <p className="rounded-lg border border-dashed border-stone-300 p-6 text-center text-stone-500 dark:border-stone-700">
+        <p className="rounded-2xl border border-dashed border-stone-300 p-6 text-center text-stone-500 dark:border-stone-700">
           Zu wenige Arten in dieser Auswahl (mindestens {MIN_POOL_SIZE} nötig) – bitte Häufigkeit oder Familie weiter
           fassen.
         </p>
       ) : (
         <>
-          <div className="overflow-hidden rounded-xl border border-stone-200 dark:border-stone-800">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm dark:border-stone-800">
             <BirdImage
               wikiTitle={question.correct.wikiTitle}
               alt="Welcher Vogel ist das?"
@@ -200,26 +221,31 @@ export function Quiz() {
                   key={opt.id}
                   onClick={() => answer(opt.id)}
                   disabled={showState}
-                  className={`rounded-lg border p-3 text-left font-medium transition ${
+                  className={`tap-shrink flex items-center gap-2 rounded-xl border p-3 text-left font-medium transition-colors ${
                     showState && isCorrectOpt
-                      ? 'border-green-600 bg-green-50 text-green-800 dark:bg-green-950 dark:text-green-300'
+                      ? 'border-brand-600 bg-brand-50 text-brand-900 dark:bg-brand-950 dark:text-brand-200'
                       : showState && isSelected
                         ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
-                        : 'border-stone-200 dark:border-stone-800'
+                        : 'border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'
                   }`}
                 >
-                  {opt.nameDe}
+                  {showState && isCorrectOpt && <span>✅</span>}
+                  {showState && isSelected && !isCorrectOpt && <span>❌</span>}
+                  <span>{opt.nameDe}</span>
                 </button>
               );
             })}
           </div>
 
           {selected && (
-            <div className="flex flex-col gap-3 rounded-lg bg-stone-50 p-4 dark:bg-stone-900">
+            <div className="animate-sheet-in flex flex-col gap-3 rounded-2xl bg-stone-50 p-4 dark:bg-stone-900">
               <p>
                 <strong>{question.correct.nameDe}</strong> — {question.correct.features[0]}
               </p>
-              <button onClick={next} className="self-start rounded-lg bg-green-700 px-4 py-2 text-white">
+              <button
+                onClick={next}
+                className="tap-shrink self-start rounded-xl bg-brand-600 px-4 py-2.5 font-medium text-white shadow-sm shadow-brand-900/20"
+              >
                 Nächster Vogel →
               </button>
             </div>
