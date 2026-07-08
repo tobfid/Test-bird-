@@ -3,6 +3,7 @@ import { BirdDetail } from './components/BirdDetail';
 import { IdentifyWizard } from './components/IdentifyWizard';
 import { Overview } from './components/Overview';
 import { Quiz } from './components/Quiz';
+import { ShareSheet } from './components/ShareSheet';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
 type Tab = 'uebersicht' | 'bestimmen' | 'quiz' | 'favoriten';
@@ -18,6 +19,7 @@ function App() {
   const [tab, setTab] = useState<Tab>('uebersicht');
   const [favorites, setFavorites] = useLocalStorage<string[]>('vogelapp-favoriten', []);
   const [selectedBird, setSelectedBird] = useState<string | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
 
   function toggleFavorite(id: string) {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
@@ -25,11 +27,19 @@ function App() {
 
   return (
     <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col">
-      <header className="border-b border-stone-200 px-4 py-4 dark:border-stone-800">
-        <h1 className="text-2xl font-bold text-green-800 dark:text-green-400">🐦 Vogelbestimmung Deutschland</h1>
-        <p className="text-sm text-stone-500 dark:text-stone-400">
-          Heimische Vögel entdecken, bestimmen und spielerisch lernen
-        </p>
+      <header className="flex items-start justify-between gap-3 border-b border-stone-200 px-4 py-4 dark:border-stone-800">
+        <div>
+          <h1 className="text-2xl font-bold text-green-800 dark:text-green-400">🐦 Vogelbestimmung Deutschland</h1>
+          <p className="text-sm text-stone-500 dark:text-stone-400">
+            Heimische Vögel entdecken, bestimmen und spielerisch lernen
+          </p>
+        </div>
+        <button
+          onClick={() => setShareOpen(true)}
+          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-stone-300 px-3 py-2 text-sm font-medium dark:border-stone-700"
+        >
+          📲 Teilen
+        </button>
       </header>
 
       <nav className="sticky top-0 z-10 flex border-b border-stone-200 bg-stone-50/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
@@ -80,6 +90,8 @@ function App() {
           onSelectBird={setSelectedBird}
         />
       )}
+
+      {shareOpen && <ShareSheet onClose={() => setShareOpen(false)} />}
     </div>
   );
 }

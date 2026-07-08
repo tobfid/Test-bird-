@@ -21,6 +21,16 @@ export type SizeClass = 'winzig' | 'klein' | 'mittel' | 'groß' | 'sehr groß';
 
 export type Status = 'Standvogel' | 'Teilzieher' | 'Sommervogel' | 'Wintergast';
 
+export type Rarity = 'sehr häufig' | 'häufig' | 'mittel' | 'selten';
+
+export type ForagingLocation =
+  | 'Boden'
+  | 'Baumrinde & Stämme'
+  | 'Zweige & Kronen'
+  | 'Wasser'
+  | 'Luft'
+  | 'Sitzwarte (Zaun, Draht, Pfahl)';
+
 export interface Bird {
   /** URL-freundliche eindeutige Kennung */
   id: string;
@@ -38,12 +48,18 @@ export interface Bird {
   features: string[];
   /** Beschreibung des Gesangs/Rufs */
   voice: string;
+  /** Wo man den Vogel typischerweise antrifft/beobachtet (strukturiert, fürs Filtern) */
+  foragingLocations: ForagingLocation[];
+  /** Kurzer Freitext, wie/wo genau er sich aufhält und nach Nahrung sucht */
+  foragingInfo: string;
+  /** Beschreibung des Flugbilds */
+  flight: string;
   /** IDs leicht zu verwechselnder Arten */
   confusionWith?: string[];
   funFact: string;
   /** Titel des deutschen Wikipedia-Artikels, für Bild & weiterführende Infos */
   wikiTitle: string;
-  rarity: 'sehr häufig' | 'häufig' | 'mittel' | 'selten';
+  rarity: Rarity;
 }
 
 export function sizeClass(sizeCm: [number, number]): SizeClass {
@@ -79,3 +95,14 @@ export const COLORS: Color[] = [
 export const SIZE_CLASSES: SizeClass[] = ['winzig', 'klein', 'mittel', 'groß', 'sehr groß'];
 
 export const STATUSES: Status[] = ['Standvogel', 'Teilzieher', 'Sommervogel', 'Wintergast'];
+
+export const RARITIES: Rarity[] = ['sehr häufig', 'häufig', 'mittel', 'selten'];
+
+export const FORAGING_LOCATIONS: ForagingLocation[] = [
+  'Boden',
+  'Baumrinde & Stämme',
+  'Zweige & Kronen',
+  'Wasser',
+  'Luft',
+  'Sitzwarte (Zaun, Draht, Pfahl)',
+];

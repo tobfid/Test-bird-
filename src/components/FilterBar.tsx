@@ -1,5 +1,15 @@
-import { COLORS, HABITATS, SIZE_CLASSES, type Color, type Habitat, type SizeClass } from '../data/types';
+import {
+  COLORS,
+  HABITATS,
+  RARITIES,
+  SIZE_CLASSES,
+  type Color,
+  type Habitat,
+  type Rarity,
+  type SizeClass,
+} from '../data/types';
 import type { FilterState } from '../utils/filterBirds';
+import { RARITY_LABEL } from '../utils/rarityStyle';
 
 function Chip<T extends string>({
   label,
@@ -37,7 +47,11 @@ export function FilterBar({
   onChange: (next: FilterState) => void;
 }) {
   const hasActiveFilters =
-    filter.habitats.length > 0 || filter.colors.length > 0 || filter.sizes.length > 0 || filter.query.length > 0;
+    filter.habitats.length > 0 ||
+    filter.colors.length > 0 ||
+    filter.sizes.length > 0 ||
+    filter.rarities.length > 0 ||
+    filter.query.length > 0;
 
   return (
     <div className="flex flex-col gap-4">
@@ -91,10 +105,24 @@ export function FilterBar({
         </div>
       </div>
 
+      <div>
+        <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Häufigkeit</p>
+        <div className="flex flex-wrap gap-2">
+          {RARITIES.map((r: Rarity) => (
+            <Chip
+              key={r}
+              label={RARITY_LABEL[r]}
+              active={filter.rarities.includes(r)}
+              onClick={() => onChange({ ...filter, rarities: toggle(filter.rarities, r) })}
+            />
+          ))}
+        </div>
+      </div>
+
       {hasActiveFilters && (
         <button
           type="button"
-          onClick={() => onChange({ query: '', habitats: [], colors: [], sizes: [] })}
+          onClick={() => onChange({ query: '', habitats: [], colors: [], sizes: [], rarities: [] })}
           className="self-start text-sm text-green-700 underline dark:text-green-400"
         >
           Filter zurücksetzen

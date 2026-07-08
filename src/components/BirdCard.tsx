@@ -1,4 +1,5 @@
 import type { Bird } from '../data/types';
+import { RARITY_BADGE_CLASSES, RARITY_LABEL } from '../utils/rarityStyle';
 import { BirdImage } from './BirdImage';
 
 export function BirdCard({
@@ -46,7 +47,10 @@ export function BirdCard({
         <h3 className="text-base font-semibold text-stone-900 dark:text-stone-50">{bird.nameDe}</h3>
         <p className="text-sm italic text-stone-500 dark:text-stone-400">{bird.nameLatin}</p>
         <div className="mt-auto flex flex-wrap gap-1 pt-2">
-          {bird.habitats.slice(0, 2).map((h) => (
+          <span className={`rounded-full px-2 py-0.5 text-xs ${RARITY_BADGE_CLASSES[bird.rarity]}`}>
+            {RARITY_LABEL[bird.rarity]}
+          </span>
+          {bird.habitats.slice(0, 1).map((h) => (
             <span
               key={h}
               className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800 dark:bg-green-950 dark:text-green-300"

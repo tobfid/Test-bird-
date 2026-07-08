@@ -2,14 +2,10 @@ import { useEffect, type ReactNode } from 'react';
 import { birds } from '../data/birds';
 import { sizeClass } from '../data/types';
 import { useWikiSummary } from '../hooks/useWikiSummary';
+import { RARITY_BADGE_CLASSES, RARITY_LABEL } from '../utils/rarityStyle';
+import { BirdGallery } from './BirdGallery';
 import { BirdImage } from './BirdImage';
-
-const RARITY_LABEL: Record<string, string> = {
-  'sehr häufig': 'Sehr häufig',
-  häufig: 'Häufig',
-  mittel: 'Mittel häufig',
-  selten: 'Selten',
-};
+import { BirdSongPlayer } from './BirdSongPlayer';
 
 export function BirdDetail({
   birdId,
@@ -61,6 +57,8 @@ export function BirdDetail({
           </button>
         </div>
 
+        <BirdGallery wikiTitle={bird.wikiTitle} heroUrl={wiki?.thumbnailUrl ?? null} alt={bird.nameDe} />
+
         <div className="flex flex-col gap-5 p-5">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -81,7 +79,14 @@ export function BirdDetail({
             <InfoBox label="Größe" value={`${bird.sizeCm[0]}–${bird.sizeCm[1]} cm`} />
             <InfoBox label="Größenklasse" value={sizeClass(bird.sizeCm)} />
             <InfoBox label="Status" value={bird.status} />
-            <InfoBox label="Häufigkeit" value={RARITY_LABEL[bird.rarity]} />
+            <div className="rounded-lg bg-stone-100 p-2 text-center dark:bg-stone-800">
+              <p className="text-xs text-stone-500 dark:text-stone-400">Häufigkeit</p>
+              <span
+                className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${RARITY_BADGE_CLASSES[bird.rarity]}`}
+              >
+                {RARITY_LABEL[bird.rarity]}
+              </span>
+            </div>
           </div>
 
           <Section title="Wann & wo in Deutschland">
@@ -106,8 +111,27 @@ export function BirdDetail({
             </ul>
           </Section>
 
+          <Section title="Flugbild">
+            <p>{bird.flight}</p>
+          </Section>
+
+          <Section title="Wo zu sehen">
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              {bird.foragingLocations.map((loc) => (
+                <span
+                  key={loc}
+                  className="rounded-full bg-orange-100 px-2 py-0.5 text-xs text-orange-800 dark:bg-orange-950 dark:text-orange-300"
+                >
+                  {loc}
+                </span>
+              ))}
+            </div>
+            <p>{bird.foragingInfo}</p>
+          </Section>
+
           <Section title="Stimme">
-            <p>{bird.voice}</p>
+            <p className="mb-2">{bird.voice}</p>
+            <BirdSongPlayer bird={bird} />
           </Section>
 
           {confusionBirds.length > 0 && (

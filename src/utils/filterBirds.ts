@@ -1,4 +1,4 @@
-import type { Bird, Color, Habitat, SizeClass } from '../data/types';
+import type { Bird, Color, Habitat, Rarity, SizeClass } from '../data/types';
 import { sizeClass } from '../data/types';
 
 export interface FilterState {
@@ -6,6 +6,7 @@ export interface FilterState {
   habitats: Habitat[];
   colors: Color[];
   sizes: SizeClass[];
+  rarities: Rarity[];
 }
 
 export const emptyFilterState: FilterState = {
@@ -13,6 +14,7 @@ export const emptyFilterState: FilterState = {
   habitats: [],
   colors: [],
   sizes: [],
+  rarities: [],
 };
 
 export function filterBirds(birds: Bird[], filter: FilterState): Bird[] {
@@ -30,6 +32,9 @@ export function filterBirds(birds: Bird[], filter: FilterState): Bird[] {
       return false;
     }
     if (filter.sizes.length > 0 && !filter.sizes.includes(sizeClass(bird.sizeCm))) {
+      return false;
+    }
+    if (filter.rarities.length > 0 && !filter.rarities.includes(bird.rarity)) {
       return false;
     }
     return true;

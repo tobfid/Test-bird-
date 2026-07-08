@@ -1,6 +1,14 @@
 import { useMemo, useState } from 'react';
 import { birds } from '../data/birds';
-import { COLORS, HABITATS, type Color, type Habitat, type SizeClass } from '../data/types';
+import {
+  COLORS,
+  FORAGING_LOCATIONS,
+  HABITATS,
+  type Color,
+  type ForagingLocation,
+  type Habitat,
+  type SizeClass,
+} from '../data/types';
 import { sizeClass } from '../data/types';
 import { BirdCard } from './BirdCard';
 
@@ -15,10 +23,11 @@ const SIZE_OPTIONS: { value: SizeClass; label: string; hint: string }[] = [
 interface WizardState {
   size: SizeClass | null;
   habitat: Habitat | null;
+  foraging: ForagingLocation | null;
   colors: Color[];
 }
 
-const initialState: WizardState = { size: null, habitat: null, colors: [] };
+const initialState: WizardState = { size: null, habitat: null, foraging: null, colors: [] };
 
 export function IdentifyWizard({
   favorites,
@@ -45,6 +54,10 @@ export function IdentifyWizard({
           possible += 1;
           if (bird.habitats.includes(state.habitat)) score += 1;
         }
+        if (state.foraging) {
+          possible += 1;
+          if (bird.foragingLocations.includes(state.foraging)) score += 1;
+        }
         if (state.colors.length > 0) {
           possible += 1;
           if (state.colors.some((c) => bird.colors.includes(c))) score += 1;
@@ -56,14 +69,15 @@ export function IdentifyWizard({
       .map((r) => r.bird);
   }, [state]);
 
-  const started = state.size !== null || state.habitat !== null || state.colors.length > 0;
+  const started =
+    state.size !== null || state.habitat !== null || state.foraging !== null || state.colors.length > 0;
 
   function reset() {
     setState(initialState);
     setStep(0);
   }
 
-  const steps = ['Größe', 'Lebensraum', 'Farbe', 'Ergebnis'];
+  const steps = ['Größe', 'Lebensraum', 'Beobachtungsort', 'Farbe', 'Ergebnis'];
 
   return (
     <div className="flex flex-col gap-6">
@@ -137,6 +151,38 @@ export function IdentifyWizard({
       {step === 2 && (
         <div>
           <p className="mb-2 text-sm text-stone-500 dark:text-stone-400">
+            Wo genau hast du den Vogel gesehen? Das grenzt die Kandidaten oft stark ein.
+          </p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {FORAGING_LOCATIONS.map((loc) => (
+              <button
+                key={loc}
+                onClick={() => {
+                  setState((s) => ({ ...s, foraging: loc }));
+                  setStep(3);
+                }}
+                className={`rounded-lg border p-3 text-left font-medium ${
+                  state.foraging === loc
+                    ? 'border-green-700 bg-green-50 dark:bg-green-950'
+                    : 'border-stone-200 dark:border-stone-800'
+                }`}
+              >
+                {loc}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setStep(3)}
+            className="mt-4 text-sm text-stone-500 underline dark:text-stone-400"
+          >
+            Überspringen
+          </button>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div>
+          <p className="mb-2 text-sm text-stone-500 dark:text-stone-400">
             Mehrfachauswahl möglich – wähle die auffälligsten Farben.
           </p>
           <div className="flex flex-wrap gap-2">
@@ -160,7 +206,7 @@ export function IdentifyWizard({
             ))}
           </div>
           <button
-            onClick={() => setStep(3)}
+            onClick={() => setStep(4)}
             className="mt-4 rounded-lg bg-green-700 px-4 py-2 text-white"
           >
             Vögel anzeigen ({results.length})
@@ -168,7 +214,7 @@ export function IdentifyWizard({
         </div>
       )}
 
-      {step === 3 && (
+      {step === 4 && (
         <div>
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm text-stone-500 dark:text-stone-400">
@@ -198,7 +244,7 @@ export function IdentifyWizard({
         </div>
       )}
 
-      {started && step < 3 && (
+      {started && step < 4 && (
         <button onClick={reset} className="self-start text-sm text-stone-500 underline dark:text-stone-400">
           Zurücksetzen
         </button>

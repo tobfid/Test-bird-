@@ -1,0 +1,14 @@
+{
+  "name": "Vogelbestimmung Deutschland",
+  "short_name": "Vögel DE",
+  "description": "Heimische Vögel entdecken, bestimmen und spielerisch lernen.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#15803d",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
