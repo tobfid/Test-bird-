@@ -9,15 +9,15 @@ export function Flashcard({ bird, onAnswer }: { bird: Bird; onAnswer: (correct: 
     <div className="flex flex-col gap-4">
       <button
         onClick={() => setRevealed((r) => !r)}
-        className="tap-shrink block w-full overflow-hidden rounded-3xl border border-stone-200 text-left shadow-sm dark:border-stone-800"
+        className="tap-shrink block w-full overflow-hidden rounded-3xl border border-stone-200 text-left shadow-sm dark:border-stone-700"
       >
         <div className="relative aspect-4/3 w-full">
           <BirdImage wikiTitle={bird.wikiTitle} alt="Welcher Vogel ist das?" className="h-full w-full object-cover" />
         </div>
-        <div className="bg-white p-4 dark:bg-stone-900">
+        <div className="bg-white p-4 dark:bg-stone-800">
           {revealed ? (
             <>
-              <h3 className="text-xl font-bold text-brand-900 dark:text-brand-200">{bird.nameDe}</h3>
+              <h3 className="text-xl font-bold text-brand-900 dark:text-stone-100">{bird.nameDe}</h3>
               <p className="mb-2 italic text-stone-500 dark:text-stone-400">{bird.nameLatin}</p>
               <p className="text-sm text-stone-700 dark:text-stone-300">{bird.features[0]}</p>
             </>

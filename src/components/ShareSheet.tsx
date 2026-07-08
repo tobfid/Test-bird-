@@ -36,7 +36,7 @@ export function ShareSheet({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="animate-sheet-in pb-safe flex w-full max-w-sm flex-col items-center gap-4 rounded-t-3xl bg-white p-6 text-center sm:rounded-3xl dark:bg-stone-900"
+        className="animate-sheet-in pb-safe flex w-full max-w-sm flex-col items-center gap-4 rounded-t-3xl bg-white p-6 text-center sm:rounded-3xl dark:bg-stone-800"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-center pt-1 sm:hidden">

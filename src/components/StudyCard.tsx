@@ -65,7 +65,7 @@ export function StudyCard({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900">
+      <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
         <div className="relative aspect-4/3 w-full">
           <BirdImage wikiTitle={bird.wikiTitle} alt={bird.nameDe} className="h-full w-full object-cover" />
           <span
@@ -76,7 +76,7 @@ export function StudyCard({
           <button
             onClick={() => onFavorite(bird.id)}
             aria-label={isFavorite ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
-            className="tap-shrink absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-900/90"
+            className="tap-shrink absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-800/90"
           >
             <span className={isFavorite ? 'animate-pop inline-block' : 'inline-block'}>
               {isFavorite ? '❤️' : '🤍'}
@@ -88,7 +88,7 @@ export function StudyCard({
 
         <div className="flex flex-col gap-4 p-5">
           <div>
-            <h3 className="text-2xl font-bold text-brand-900 dark:text-brand-200">{bird.nameDe}</h3>
+            <h3 className="text-2xl font-bold text-brand-900 dark:text-stone-100">{bird.nameDe}</h3>
             <p className="italic text-stone-500 dark:text-stone-400">{bird.nameLatin}</p>
           </div>
 

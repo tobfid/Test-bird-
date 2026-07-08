@@ -45,7 +45,7 @@ function OptionButton({
       className={`tap-shrink flex items-center justify-between rounded-xl border p-3 text-left ${
         active
           ? 'border-brand-600 bg-brand-50 dark:bg-brand-950'
-          : 'border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'
+          : 'border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800'
       }`}
     >
       <span className="flex-1">{children}</span>
@@ -105,7 +105,7 @@ export function IdentifyWizard({
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <h2 className="text-xl font-semibold text-brand-900 dark:text-brand-200">Bestimmungs-Assistent</h2>
+        <h2 className="text-xl font-semibold text-brand-900 dark:text-stone-100">Bestimmungs-Assistent</h2>
         <p className="text-stone-500 dark:text-stone-400">
           Beantworte ein paar einfache Fragen zu dem Vogel, den du gerade siehst.
         </p>

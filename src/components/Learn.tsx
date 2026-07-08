@@ -62,14 +62,14 @@ export function Learn({
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-5">
       <div>
-        <h2 className="text-xl font-semibold text-brand-900 dark:text-brand-200">🎓 Lernen</h2>
+        <h2 className="text-xl font-semibold text-brand-900 dark:text-stone-100">🎓 Lernen</h2>
         <p className="text-stone-500 dark:text-stone-400">
           Erst anschauen und einprägen, dann testen. Am schnellsten wirst du Experte, wenn du bei den häufigsten
           Arten anfängst.
         </p>
       </div>
 
-      <div className="flex gap-1 rounded-2xl bg-stone-100 p-1 dark:bg-stone-900">
+      <div className="flex gap-1 rounded-2xl bg-stone-100 p-1 dark:bg-stone-800">
         {MODES.map((m) => (
           <button
             key={m.id}
@@ -89,14 +89,14 @@ export function Learn({
         {tiers.map((t) => (
           <span
             key={t.rarity}
-            className="rounded-full border border-stone-200 px-2.5 py-1 text-xs text-stone-600 dark:border-stone-800 dark:text-stone-300"
+            className="rounded-full border border-stone-200 px-2.5 py-1 text-xs text-stone-600 dark:border-stone-700 dark:text-stone-300"
           >
             {RARITY_LABEL[t.rarity]}: {t.mastered}/{t.total}
           </span>
         ))}
       </div>
 
-      <div className="rounded-2xl border border-stone-200 dark:border-stone-800">
+      <div className="rounded-2xl border border-stone-200 dark:border-stone-700">
         <button
           onClick={() => setScopeOpen((o) => !o)}
           className="tap-shrink flex w-full items-center justify-between gap-2 px-4 py-3 text-left"
@@ -108,7 +108,7 @@ export function Learn({
           <span className="text-stone-400">{scopeOpen ? '▲' : '▼'}</span>
         </button>
         {scopeOpen && (
-          <div className="animate-sheet-in flex flex-col gap-3 border-t border-stone-200 p-4 dark:border-stone-800">
+          <div className="animate-sheet-in flex flex-col gap-3 border-t border-stone-200 p-4 dark:border-stone-700">
             <div>
               <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Häufigkeit</p>
               <div className="flex flex-wrap gap-2">
@@ -140,7 +140,7 @@ export function Learn({
               <select
                 value={scope.family}
                 onChange={(e) => setScope((s) => ({ ...s, family: e.target.value }))}
-                className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-900"
+                className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-800"
               >
                 {FAMILY_OPTIONS.map((f) => (
                   <option key={f} value={f}>
@@ -260,7 +260,7 @@ function QuizMode({
         </p>
       ) : (
         <>
-          <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm dark:border-stone-800">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 shadow-sm dark:border-stone-700">
             <BirdImage
               wikiTitle={question.correct.wikiTitle}
               alt="Welcher Vogel ist das?"
@@ -283,7 +283,7 @@ function QuizMode({
                       ? 'border-brand-600 bg-brand-50 text-brand-900 dark:bg-brand-950 dark:text-brand-200'
                       : showState && isSelected
                         ? 'border-red-500 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300'
-                        : 'border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900'
+                        : 'border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800'
                   }`}
                 >
                   {showState && isCorrectOpt && <span>✅</span>}
@@ -295,7 +295,7 @@ function QuizMode({
           </div>
 
           {selected && (
-            <div className="animate-sheet-in flex flex-col gap-3 rounded-2xl bg-stone-50 p-4 dark:bg-stone-900">
+            <div className="animate-sheet-in flex flex-col gap-3 rounded-2xl bg-stone-50 p-4 dark:bg-stone-800">
               <p>
                 <strong>{question.correct.nameDe}</strong> — {question.correct.features[0]}
               </p>
