@@ -39,19 +39,23 @@ export function BirdDetail({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+      className="animate-backdrop-in fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[92svh] w-full max-w-2xl flex-col overflow-y-auto rounded-t-2xl bg-white sm:rounded-2xl dark:bg-stone-900"
+        className="animate-sheet-in pb-safe flex max-h-[92svh] w-full max-w-2xl flex-col overflow-y-auto rounded-t-3xl bg-white sm:rounded-3xl dark:bg-stone-900"
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="flex justify-center pt-2 sm:hidden">
+          <span className="h-1.5 w-10 rounded-full bg-stone-300 dark:bg-stone-700" />
+        </div>
+
         <div className="relative aspect-16/9 w-full shrink-0">
-          <BirdImage wikiTitle={bird.wikiTitle} alt={bird.nameDe} className="h-full w-full object-cover sm:rounded-t-2xl" />
+          <BirdImage wikiTitle={bird.wikiTitle} alt={bird.nameDe} className="h-full w-full object-cover sm:rounded-t-3xl" />
           <button
             onClick={onClose}
             aria-label="Schließen"
-            className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-900/90"
+            className="tap-shrink absolute top-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-lg shadow dark:bg-stone-900/90"
           >
             ✕
           </button>
@@ -69,9 +73,11 @@ export function BirdDetail({
             <button
               onClick={() => onToggleFavorite(bird.id)}
               aria-label={isFavorite ? 'Von Favoriten entfernen' : 'Zu Favoriten hinzufügen'}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-200 text-xl dark:border-stone-700"
+              className="tap-shrink flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-200 text-xl dark:border-stone-700"
             >
-              {isFavorite ? '❤️' : '🤍'}
+              <span className={isFavorite ? 'animate-pop inline-block' : 'inline-block'}>
+                {isFavorite ? '❤️' : '🤍'}
+              </span>
             </button>
           </div>
 
@@ -89,13 +95,13 @@ export function BirdDetail({
             </div>
           </div>
 
-          <Section title="Wann & wo in Deutschland">
+          <Section icon="🗓️" title="Wann & wo in Deutschland">
             <p>{bird.seasonInfo}</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {bird.habitats.map((h) => (
                 <span
                   key={h}
-                  className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800 dark:bg-green-950 dark:text-green-300"
+                  className="rounded-full bg-brand-100 px-2 py-0.5 text-xs text-brand-800 dark:bg-brand-950 dark:text-brand-300"
                 >
                   {h}
                 </span>
@@ -103,7 +109,7 @@ export function BirdDetail({
             </div>
           </Section>
 
-          <Section title="Erkennungsmerkmale">
+          <Section icon="🔎" title="Erkennungsmerkmale">
             <ul className="list-disc space-y-1 pl-5">
               {bird.features.map((f) => (
                 <li key={f}>{f}</li>
@@ -111,11 +117,11 @@ export function BirdDetail({
             </ul>
           </Section>
 
-          <Section title="Flugbild">
+          <Section icon="🕊️" title="Flugbild">
             <p>{bird.flight}</p>
           </Section>
 
-          <Section title="Wo zu sehen">
+          <Section icon="📍" title="Wo zu sehen">
             <div className="mb-2 flex flex-wrap gap-1.5">
               {bird.foragingLocations.map((loc) => (
                 <span
@@ -129,19 +135,19 @@ export function BirdDetail({
             <p>{bird.foragingInfo}</p>
           </Section>
 
-          <Section title="Stimme">
+          <Section icon="🎵" title="Stimme">
             <p className="mb-2">{bird.voice}</p>
             <BirdSongPlayer bird={bird} />
           </Section>
 
           {confusionBirds.length > 0 && (
-            <Section title="Leicht zu verwechseln mit">
+            <Section icon="⚠️" title="Leicht zu verwechseln mit">
               <div className="flex flex-wrap gap-2">
                 {confusionBirds.map((c) => (
                   <button
                     key={c.id}
                     onClick={() => onSelectBird(c.id)}
-                    className="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                    className="tap-shrink rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300"
                   >
                     {c.nameDe}
                   </button>
@@ -150,7 +156,7 @@ export function BirdDetail({
             </Section>
           )}
 
-          <Section title="Wusstest du schon?">
+          <Section icon="💡" title="Wusstest du schon?">
             <p>{bird.funFact}</p>
           </Section>
 
@@ -159,7 +165,7 @@ export function BirdDetail({
               href={wiki.pageUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-sm text-green-700 underline dark:text-green-400"
+              className="text-sm text-brand-700 underline dark:text-brand-400"
             >
               Mehr auf Wikipedia →
             </a>
@@ -179,10 +185,11 @@ function InfoBox({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({ icon, title, children }: { icon: string; title: string; children: ReactNode }) {
   return (
     <div>
-      <h3 className="mb-1 text-sm font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
+      <h3 className="mb-1 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-stone-500 uppercase dark:text-stone-400">
+        <span aria-hidden="true">{icon}</span>
         {title}
       </h3>
       <div className="text-stone-800 dark:text-stone-200">{children}</div>
