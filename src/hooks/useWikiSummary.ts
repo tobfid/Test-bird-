@@ -29,11 +29,30 @@ function persistCache() {
   }
 }
 
+function fetchSummary(title: string): Promise<WikiSummary> {
+  return fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`).then((res) => {
+    if (!res.ok) throw new Error(`Wikipedia-Anfrage fehlgeschlagen (${res.status})`);
+    return res.json().then((json) => ({
+      thumbnailUrl: json.thumbnail?.source ?? json.originalimage?.source ?? null,
+      extract: json.extract ?? null,
+      pageUrl: json.content_urls?.desktop?.page ?? null,
+    }));
+  });
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * Lädt Vorschaubild und Kurztext eines Wikipedia-Artikels zur Laufzeit,
  * damit die App keine fest verdrahteten (und potenziell veralteten) Bild-URLs pflegen muss.
+ *
+ * `enabled` erlaubt Lazy Loading: Solange `false`, wird nicht geladen (aber ein
+ * bereits gecachtes Ergebnis trotzdem sofort angezeigt). So lassen sich viele
+ * gleichzeitige Anfragen vermeiden, wenn z.B. eine ganze Kartenliste rendert.
  */
-export function useWikiSummary(title: string) {
+export function useWikiSummary(title: string, enabled = true) {
   const [data, setData] = useState<WikiSummary | null>(cache.get(title) ?? null);
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>(
     cache.has(title) ? 'ready' : 'idle',
@@ -45,22 +64,17 @@ export function useWikiSummary(title: string) {
       setStatus('ready');
       return;
     }
+    if (!enabled || !title) return;
 
     let cancelled = false;
     setStatus('loading');
 
-    fetch(`https://de.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Wikipedia-Anfrage fehlgeschlagen (${res.status})`);
-        return res.json();
-      })
-      .then((json) => {
+    fetchSummary(title)
+      // Bei Fehlschlag (z.B. kurzzeitiges Rate-Limit) einmal nach kurzer Pause erneut versuchen,
+      // bevor endgültig aufgegeben wird.
+      .catch(() => delay(800).then(() => fetchSummary(title)))
+      .then((summary) => {
         if (cancelled) return;
-        const summary: WikiSummary = {
-          thumbnailUrl: json.thumbnail?.source ?? json.originalimage?.source ?? null,
-          extract: json.extract ?? null,
-          pageUrl: json.content_urls?.desktop?.page ?? null,
-        };
         cache.set(title, summary);
         persistCache();
         setData(summary);
@@ -74,7 +88,7 @@ export function useWikiSummary(title: string) {
     return () => {
       cancelled = true;
     };
-  }, [title]);
+  }, [title, enabled]);
 
   return { data, status };
 }

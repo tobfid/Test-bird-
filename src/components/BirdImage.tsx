@@ -1,3 +1,4 @@
+import { useInView } from '../hooks/useInView';
 import { useWikiSummary } from '../hooks/useWikiSummary';
 
 function BirdSilhouette({ className }: { className?: string }) {
@@ -22,24 +23,18 @@ export function BirdImage({
   alt: string;
   className?: string;
 }) {
-  const { data, status } = useWikiSummary(wikiTitle);
-
-  if (status === 'ready' && data?.thumbnailUrl) {
-    return (
-      <img
-        src={data.thumbnailUrl}
-        alt={alt}
-        loading="lazy"
-        className={className}
-      />
-    );
-  }
+  const [ref, inView] = useInView<HTMLDivElement>();
+  const { data, status } = useWikiSummary(wikiTitle, inView);
 
   return (
-    <div
-      className={`${className ?? ''} flex items-center justify-center bg-stone-200 text-stone-400 dark:bg-stone-800 dark:text-stone-600`}
-    >
-      <BirdSilhouette className={status === 'loading' ? 'w-1/3 animate-pulse' : 'w-1/3'} />
+    <div ref={ref} className={`overflow-hidden ${className ?? ''}`}>
+      {status === 'ready' && data?.thumbnailUrl ? (
+        <img src={data.thumbnailUrl} alt={alt} loading="lazy" className="h-full w-full object-cover" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-stone-200 text-stone-400 dark:bg-stone-800 dark:text-stone-600">
+          <BirdSilhouette className={status === 'loading' ? 'w-1/3 animate-pulse' : 'w-1/3'} />
+        </div>
+      )}
     </div>
   );
 }
