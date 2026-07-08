@@ -4,13 +4,13 @@ Eine Web-App zum Entdecken, Bestimmen und Lernen heimischer Vogelarten in Deutsc
 
 ## Funktionen
 
-- **Übersicht** – 62 häufige deutsche Vogelarten mit Steckbrief, durchsuchbar und filterbar nach Lebensraum, Farbe, Größe und Häufigkeit.
+- **Lernen** – der Kern der App, in drei Modi: **📖 Lernen** (Karten mit Foto, Merkmalen, Flugbild und Gesang zum Einprägen, sortiert von den häufigsten zu den selteneren Arten), **🃏 Karteikarten** (Foto zeigen, selbst an den Namen erinnern, dann aufdecken und ehrlich einschätzen – aktives Erinnern statt Raten) und **🎯 Quiz** (Multiple-Choice-Abfrage). Alle drei lassen sich nach Häufigkeit und Vogelfamilie eingrenzen; ein Fortschritts-Überblick zeigt, wie viele Arten je Häufigkeitsstufe schon sicher sitzen.
+- **Entdecken** – 62 häufige deutsche Vogelarten mit Steckbrief, durchsuchbar und filterbar nach Lebensraum, Farbe, Größe und Häufigkeit.
 - **Bestimmen** – Schritt-für-Schritt-Assistent: Größe, Lebensraum, Beobachtungsort (Boden, Baumrinde, Zweige, Wasser, Luft, Sitzwarte) und Farbe eingeben, passende Kandidaten werden vorgeschlagen.
 - **Steckbrief je Art** – mehrere echte Fotos, Erkennungsmerkmale, Flugbild, wo man die Art typischerweise antrifft, sowie eine echte Gesangsaufnahme zum Anhören.
-- **Quiz** – Lernquiz mit Bildern und Multiple-Choice-Antworten. Arten, die häufiger falsch beantwortet werden, kommen öfter dran. Lässt sich nach Häufigkeit und Vogelfamilie eingrenzen – am schnellsten lernt man, wenn man mit den häufigsten Arten startet und sich vorarbeitet.
 - **Favoriten** – Vögel merken, um sie später schneller wiederzufinden.
 
-Alle Fortschritte (Favoriten, Quiz-Statistik, Quiz-Auswahl) werden lokal im Browser gespeichert (`localStorage`) – jede Person, die die App nutzt, hat ihren eigenen Stand.
+Alle Fortschritte (Favoriten, Lernstatistik, Lern-Auswahl) werden lokal im Browser gespeichert (`localStorage`) – jede Person, die die App nutzt, hat ihren eigenen Stand.
 
 Fotos werden zur Laufzeit von Wikipedia geladen, Gesangsaufnahmen von [xeno-canto.org](https://xeno-canto.org) (offene, CC-lizenzierte Datenbank für Vogelstimmen) – damit die App keine großen Mediendateien mitbringen muss und immer aktuelle Inhalte zeigt. Das bedeutet aber auch: **Fotos und Gesang benötigen eine Internetverbindung.** Bei schwachem Empfang im Wald funktionieren Text, Steckbrief-Angaben und der Bestimmungs-Assistent trotzdem weiter, Fotos/Audio laden dann ggf. erst später nach.
 

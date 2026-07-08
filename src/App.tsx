@@ -1,29 +1,29 @@
 import { useState } from 'react';
 import { BirdDetail } from './components/BirdDetail';
 import { IdentifyWizard } from './components/IdentifyWizard';
+import { Learn } from './components/Learn';
 import { Overview } from './components/Overview';
-import { Quiz } from './components/Quiz';
 import { ShareSheet } from './components/ShareSheet';
 import { useLocalStorage } from './hooks/useLocalStorage';
 
-type Tab = 'uebersicht' | 'bestimmen' | 'quiz' | 'favoriten';
+type Tab = 'uebersicht' | 'lernen' | 'bestimmen' | 'favoriten';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'lernen', label: 'Lernen', icon: '🎓' },
   { id: 'uebersicht', label: 'Entdecken', icon: '📖' },
   { id: 'bestimmen', label: 'Bestimmen', icon: '🔍' },
-  { id: 'quiz', label: 'Quiz', icon: '🎯' },
   { id: 'favoriten', label: 'Favoriten', icon: '❤️' },
 ];
 
 const TAB_TITLES: Record<Tab, { title: string; subtitle: string }> = {
+  lernen: { title: 'Vögel lernen', subtitle: 'Einprägen, dann testen – häufigste Arten zuerst' },
   uebersicht: { title: 'Vögel entdecken', subtitle: '62 heimische Arten zum Durchstöbern' },
   bestimmen: { title: 'Vogel bestimmen', subtitle: 'Schritt für Schritt zur richtigen Art' },
-  quiz: { title: 'Lernquiz', subtitle: 'Übe und werde sicherer im Bestimmen' },
   favoriten: { title: 'Deine Favoriten', subtitle: 'Gemerkte Arten auf einen Blick' },
 };
 
 function App() {
-  const [tab, setTab] = useState<Tab>('uebersicht');
+  const [tab, setTab] = useState<Tab>('lernen');
   const [favorites, setFavorites] = useLocalStorage<string[]>('vogelapp-favoriten', []);
   const [selectedBird, setSelectedBird] = useState<string | null>(null);
   const [shareOpen, setShareOpen] = useState(false);
@@ -54,13 +54,13 @@ function App() {
       </header>
 
       <main className="flex-1 px-4 py-5 pb-28">
+        {tab === 'lernen' && <Learn favorites={favorites} onToggleFavorite={toggleFavorite} />}
         {tab === 'uebersicht' && (
           <Overview favorites={favorites} onToggleFavorite={toggleFavorite} onSelectBird={setSelectedBird} />
         )}
         {tab === 'bestimmen' && (
           <IdentifyWizard favorites={favorites} onToggleFavorite={toggleFavorite} onSelectBird={setSelectedBird} />
         )}
-        {tab === 'quiz' && <Quiz />}
         {tab === 'favoriten' && (
           <Overview
             favorites={favorites}
