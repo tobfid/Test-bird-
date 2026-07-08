@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { RARITIES } from '../data/types';
+import { HABITATS, RARITIES } from '../data/types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   buildMultipleChoice,
   defaultScope,
   FAMILY_OPTIONS,
   isMastered,
+  LEARN_AXES,
   MIN_POOL_SIZE,
   pickWeighted,
   poolFor,
@@ -32,10 +33,13 @@ function toggle<T>(list: T[], value: T): T[] {
 }
 
 function scopeSummary(scope: LearnScope): string {
-  const rarityPart =
-    scope.rarities.length === 0 ? 'Alle Häufigkeiten' : scope.rarities.map((r) => RARITY_LABEL[r]).join(', ');
-  const familyPart = scope.family === FAMILY_OPTIONS[0] ? 'alle Familien' : scope.family;
-  return `${rarityPart} · ${familyPart}`;
+  if (scope.axis === 'lebensraum') {
+    return scope.habitats.length === 0 ? 'Alle Lebensräume' : scope.habitats.join(', ');
+  }
+  if (scope.axis === 'familie') {
+    return scope.family === FAMILY_OPTIONS[0] ? 'Alle Familien' : scope.family;
+  }
+  return scope.rarities.length === 0 ? 'Alle Häufigkeiten' : scope.rarities.map((r) => RARITY_LABEL[r]).join(', ');
 }
 
 export function Learn({
@@ -102,7 +106,9 @@ export function Learn({
           className="tap-shrink flex w-full items-center justify-between gap-2 px-4 py-3 text-left"
         >
           <div>
-            <p className="text-xs text-stone-500 dark:text-stone-400">Lern-Auswahl</p>
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              Nach {LEARN_AXES.find((a) => a.id === scope.axis)?.label}
+            </p>
             <p className="text-sm font-medium">{scopeSummary(scope)}</p>
           </div>
           <span className="text-stone-400">{scopeOpen ? '▲' : '▼'}</span>
@@ -110,45 +116,98 @@ export function Learn({
         {scopeOpen && (
           <div className="animate-sheet-in flex flex-col gap-3 border-t border-stone-200 p-4 dark:border-stone-700">
             <div>
-              <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Häufigkeit</p>
-              <div className="flex flex-wrap gap-2">
-                {RARITIES.map((r) => (
+              <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Kategorie</p>
+              <div className="flex gap-1 rounded-xl bg-stone-100 p-1 dark:bg-stone-900">
+                {LEARN_AXES.map((a) => (
                   <button
-                    key={r}
-                    onClick={() => setScope((s) => ({ ...s, rarities: toggle(s.rarities, r) }))}
-                    className={`tap-shrink rounded-full border px-3 py-1 text-sm ${
-                      scope.rarities.includes(r)
-                        ? 'border-brand-600 bg-brand-600 text-white'
-                        : 'border-stone-300 dark:border-stone-700'
+                    key={a.id}
+                    onClick={() => setScope((s) => ({ ...s, axis: a.id }))}
+                    className={`tap-shrink flex-1 rounded-lg py-1.5 text-sm font-medium ${
+                      scope.axis === a.id
+                        ? 'bg-white text-brand-800 shadow-sm dark:bg-stone-700 dark:text-brand-300'
+                        : 'text-stone-500 dark:text-stone-400'
                     }`}
                   >
-                    {RARITY_LABEL[r]}
+                    {a.icon} {a.label}
                   </button>
                 ))}
-                {scope.rarities.length > 0 && (
-                  <button
-                    onClick={() => setScope((s) => ({ ...s, rarities: [] }))}
-                    className="tap-shrink rounded-full border border-stone-300 px-3 py-1 text-sm text-stone-500 dark:border-stone-700 dark:text-stone-400"
-                  >
-                    Alle
-                  </button>
-                )}
               </div>
             </div>
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Vogelfamilie</span>
-              <select
-                value={scope.family}
-                onChange={(e) => setScope((s) => ({ ...s, family: e.target.value }))}
-                className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-800"
-              >
-                {FAMILY_OPTIONS.map((f) => (
-                  <option key={f} value={f}>
-                    {f}
-                  </option>
-                ))}
-              </select>
-            </label>
+
+            {scope.axis === 'haeufigkeit' && (
+              <div>
+                <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Unterbereich</p>
+                <div className="flex flex-wrap gap-2">
+                  {RARITIES.map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setScope((s) => ({ ...s, rarities: toggle(s.rarities, r) }))}
+                      className={`tap-shrink rounded-full border px-3 py-1 text-sm ${
+                        scope.rarities.includes(r)
+                          ? 'border-brand-600 bg-brand-600 text-white'
+                          : 'border-stone-300 dark:border-stone-700'
+                      }`}
+                    >
+                      {RARITY_LABEL[r]}
+                    </button>
+                  ))}
+                  {scope.rarities.length > 0 && (
+                    <button
+                      onClick={() => setScope((s) => ({ ...s, rarities: [] }))}
+                      className="tap-shrink rounded-full border border-stone-300 px-3 py-1 text-sm text-stone-500 dark:border-stone-700 dark:text-stone-400"
+                    >
+                      Alle
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {scope.axis === 'lebensraum' && (
+              <div>
+                <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Unterbereich</p>
+                <div className="flex flex-wrap gap-2">
+                  {HABITATS.map((h) => (
+                    <button
+                      key={h}
+                      onClick={() => setScope((s) => ({ ...s, habitats: toggle(s.habitats, h) }))}
+                      className={`tap-shrink rounded-full border px-3 py-1 text-sm ${
+                        scope.habitats.includes(h)
+                          ? 'border-brand-600 bg-brand-600 text-white'
+                          : 'border-stone-300 dark:border-stone-700'
+                      }`}
+                    >
+                      {h}
+                    </button>
+                  ))}
+                  {scope.habitats.length > 0 && (
+                    <button
+                      onClick={() => setScope((s) => ({ ...s, habitats: [] }))}
+                      className="tap-shrink rounded-full border border-stone-300 px-3 py-1 text-sm text-stone-500 dark:border-stone-700 dark:text-stone-400"
+                    >
+                      Alle
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {scope.axis === 'familie' && (
+              <div>
+                <p className="mb-1.5 text-sm font-medium text-stone-500 dark:text-stone-400">Unterbereich</p>
+                <select
+                  value={scope.family}
+                  onChange={(e) => setScope((s) => ({ ...s, family: e.target.value }))}
+                  className="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm dark:border-stone-700 dark:bg-stone-800"
+                >
+                  {FAMILY_OPTIONS.map((f) => (
+                    <option key={f} value={f}>
+                      {f}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -255,8 +314,8 @@ function QuizMode({
       <ScoreBar sessionScore={sessionScore} masteredCount={masteredCount} total={pool.length} />
       {!question ? (
         <p className="rounded-2xl border border-dashed border-stone-300 p-6 text-center text-stone-500 dark:border-stone-700">
-          Zu wenige Arten in dieser Auswahl (mindestens {MIN_POOL_SIZE} nötig) – bitte Häufigkeit oder Familie weiter
-          fassen.
+          Zu wenige Arten in dieser Auswahl (mindestens {MIN_POOL_SIZE} nötig) – bitte die Kategorie oder den
+          Unterbereich weiter fassen.
         </p>
       ) : (
         <>

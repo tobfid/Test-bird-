@@ -1,12 +1,22 @@
 import { birds } from '../data/birds';
-import { RARITIES, type Bird, type Rarity } from '../data/types';
+import { HABITATS, RARITIES, type Bird, type Habitat, type Rarity } from '../data/types';
 
 export interface LearnStats {
   [birdId: string]: { correct: number; wrong: number };
 }
 
+export type LearnAxis = 'haeufigkeit' | 'lebensraum' | 'familie';
+
+export const LEARN_AXES: { id: LearnAxis; label: string; icon: string }[] = [
+  { id: 'haeufigkeit', label: 'Häufigkeit', icon: '📊' },
+  { id: 'lebensraum', label: 'Lebensraum', icon: '🌳' },
+  { id: 'familie', label: 'Familie', icon: '🧬' },
+];
+
 export interface LearnScope {
+  axis: LearnAxis;
   rarities: Rarity[];
+  habitats: Habitat[];
   family: string;
 }
 
@@ -18,15 +28,25 @@ export const FAMILY_OPTIONS = [
   ...Array.from(new Set(birds.map((b) => b.family))).sort((a, b) => a.localeCompare(b, 'de')),
 ];
 
-export const defaultScope: LearnScope = { rarities: ['sehr häufig'], family: ALL_FAMILIES };
+export const defaultScope: LearnScope = {
+  axis: 'haeufigkeit',
+  rarities: ['sehr häufig'],
+  habitats: [],
+  family: ALL_FAMILIES,
+};
 
 export function poolFor(scope: LearnScope): Bird[] {
-  return birds.filter(
-    (b) =>
-      (scope.rarities.length === 0 || scope.rarities.includes(b.rarity)) &&
-      (scope.family === ALL_FAMILIES || b.family === scope.family),
-  );
+  if (scope.axis === 'lebensraum') {
+    return birds.filter((b) => scope.habitats.length === 0 || scope.habitats.some((h) => b.habitats.includes(h)));
+  }
+  if (scope.axis === 'familie') {
+    return birds.filter((b) => scope.family === ALL_FAMILIES || b.family === scope.family);
+  }
+  return birds.filter((b) => scope.rarities.length === 0 || scope.rarities.includes(b.rarity));
 }
+
+/** Für die Anzeige verfügbarer Lebensräume in der UI. */
+export { HABITATS };
 
 /** Häufigste Arten zuerst - für den sequenziellen Lernmodus. */
 export function sortByRarity(pool: Bird[]): Bird[] {
