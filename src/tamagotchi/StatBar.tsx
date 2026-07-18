@@ -1,28 +1,24 @@
-export function StatBar({
-  icon,
-  label,
-  value,
-  colorClass,
-}: {
-  icon: string;
-  label: string;
-  value: number;
-  colorClass: string;
-}) {
+const SEGMENTS = 10;
+
+export function StatBar({ icon, label, value }: { icon: string; label: string; value: number }) {
+  const filled = Math.round((value / 100) * SEGMENTS);
+
   return (
-    <div className="flex items-center gap-2">
-      <span className="w-6 text-center text-lg">{icon}</span>
-      <div className="flex-1">
-        <div className="mb-0.5 flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
-          <span>{label}</span>
-          <span>{Math.round(value)}%</span>
-        </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-stone-200 dark:bg-stone-800">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${colorClass}`}
-            style={{ width: `${value}%` }}
+    <div className="font-pixel flex items-center gap-2 text-[9px]" style={{ color: 'var(--lcd-fg)' }}>
+      <span className="w-4 shrink-0 text-center text-xs">{icon}</span>
+      <span className="w-[4.6rem] shrink-0 truncate uppercase">{label}</span>
+      <div className="flex flex-1 gap-[3px]">
+        {Array.from({ length: SEGMENTS }).map((_, i) => (
+          <span
+            key={i}
+            className="h-3 flex-1"
+            style={{
+              backgroundColor: i < filled ? 'var(--lcd-fg)' : 'transparent',
+              border: '1px solid var(--lcd-fg)',
+              opacity: i < filled ? 1 : 0.3,
+            }}
           />
-        </div>
+        ))}
       </div>
     </div>
   );
