@@ -1,17 +1,43 @@
 type VisibleStage = 'baby' | 'kind' | 'erwachsen';
 type Mood = 'happy' | 'neutral' | 'sad';
 
-const BODY_RADIUS: Record<VisibleStage, number> = {
-  baby: 46,
-  kind: 60,
-  erwachsen: 74,
+const CELL_PX: Record<VisibleStage, number> = {
+  baby: 9,
+  kind: 12,
+  erwachsen: 15,
 };
 
-const BODY_COLOR: Record<VisibleStage, string> = {
-  baby: '#8ccf92',
-  kind: '#5cb565',
-  erwachsen: '#2b7d35',
-};
+// 9x9 Pixel-Silhouette (1 = Körper-Pixel)
+const BODY: number[][] = [
+  [0, 0, 1, 1, 1, 1, 1, 0, 0],
+  [0, 1, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1, 1, 1, 1, 0],
+  [0, 0, 1, 1, 1, 1, 1, 0, 0],
+];
+
+const DIRT_ICON: number[][] = [
+  [0, 1, 1, 0],
+  [1, 1, 1, 1],
+  [0, 1, 1, 0],
+];
+
+function facePixels(asleep: boolean, sick: boolean): [number, number][] {
+  if (asleep) return [[3, 2], [3, 3], [3, 5], [3, 6]];
+  if (sick) return [[2, 2], [3, 3], [2, 6], [3, 5]];
+  return [[3, 2], [3, 6]];
+}
+
+function mouthPixels(mood: Mood, asleep: boolean): [number, number][] {
+  if (asleep) return [];
+  if (mood === 'happy') return [[6, 3], [7, 4], [6, 5]];
+  if (mood === 'sad') return [[6, 3], [5, 4], [6, 5]];
+  return [[6, 3], [6, 4], [6, 5]];
+}
 
 export function Creature({
   stage,
@@ -26,92 +52,103 @@ export function Creature({
   sick: boolean;
   dirty: boolean;
 }) {
-  const radius = BODY_RADIUS[stage];
-  const bodyColor = sick ? '#b9e3bd' : BODY_COLOR[stage];
-  const cx = 110;
-  const cy = 120;
+  const cellPx = CELL_PX[stage];
+  const size = cellPx * 9;
+  const cutouts = new Set(
+    [...facePixels(asleep, sick), ...mouthPixels(mood, asleep)].map(([r, c]) => `${r}-${c}`),
+  );
 
   return (
-    <div className={`relative flex h-56 w-56 items-center justify-center ${asleep ? '' : 'animate-float'}`}>
-      <svg viewBox="0 0 220 220" className="h-full w-full drop-shadow-lg">
-        <ellipse cx={cx} cy={cy + radius - 6} rx={radius * 0.9} ry={radius * 0.22} fill="black" opacity="0.08" />
-        <circle cx={cx} cy={cy} r={radius} fill={bodyColor} />
-
-        {dirty && (
-          <>
-            <ellipse cx={cx - radius * 0.4} cy={cy + radius * 0.3} rx="9" ry="6" fill="#7c5c34" opacity="0.55" />
-            <ellipse cx={cx + radius * 0.5} cy={cy - radius * 0.1} rx="7" ry="5" fill="#7c5c34" opacity="0.5" />
-          </>
-        )}
-
-        {sick && !asleep && (
-          <>
-            <circle cx={cx - radius * 0.35} cy={cy - radius * 0.15} r="5" fill="#84cc9a" opacity="0.7" />
-            <circle cx={cx + radius * 0.3} cy={cy + radius * 0.25} r="4" fill="#84cc9a" opacity="0.7" />
-          </>
-        )}
-
-        {asleep ? (
-          <>
-            <path
-              d={`M ${cx - 22} ${cy - 6} q 8 6 16 0`}
-              stroke="#14261a"
-              strokeWidth="3.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d={`M ${cx + 6} ${cy - 6} q 8 6 16 0`}
-              stroke="#14261a"
-              strokeWidth="3.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-          </>
-        ) : sick ? (
-          <>
-            <path
-              d={`M ${cx - 26} ${cy - 12} l 12 12 M ${cx - 26} ${cy} l 12 -12`}
-              stroke="#14261a"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-            <path
-              d={`M ${cx + 2} ${cy - 12} l 12 12 M ${cx + 2} ${cy} l 12 -12`}
-              stroke="#14261a"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </>
-        ) : (
-          <>
-            <circle cx={cx - 18} cy={cy - 6} r="6" fill="#14261a" />
-            <circle cx={cx + 18} cy={cy - 6} r="6" fill="#14261a" />
-          </>
-        )}
-
-        {asleep ? null : mood === 'happy' ? (
-          <path
-            d={`M ${cx - 16} ${cy + 16} q 16 16 32 0`}
-            stroke="#14261a"
-            strokeWidth="3.5"
-            fill="none"
-            strokeLinecap="round"
-          />
-        ) : mood === 'sad' ? (
-          <path
-            d={`M ${cx - 16} ${cy + 28} q 16 -14 32 0`}
-            stroke="#14261a"
-            strokeWidth="3.5"
-            fill="none"
-            strokeLinecap="round"
-          />
-        ) : (
-          <line x1={cx - 14} y1={cy + 20} x2={cx + 14} y2={cy + 20} stroke="#14261a" strokeWidth="3.5" strokeLinecap="round" />
+    <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+      <svg
+        width={size}
+        height={size}
+        viewBox="0 0 9 9"
+        shapeRendering="crispEdges"
+        className={asleep ? '' : 'animate-float'}
+      >
+        {BODY.map((row, r) =>
+          row.map((filled, c) => {
+            if (!filled) return null;
+            const isCutout = cutouts.has(`${r}-${c}`);
+            return (
+              <rect
+                key={`${r}-${c}`}
+                x={c}
+                y={r}
+                width={1}
+                height={1}
+                fill={isCutout ? 'var(--lcd-bg)' : 'var(--lcd-fg)'}
+              />
+            );
+          }),
         )}
       </svg>
 
-      {asleep && <span className="absolute -top-2 right-4 animate-pulse text-2xl">💤</span>}
+      {dirty && !asleep && (
+        <svg
+          width={24}
+          height={18}
+          viewBox="0 0 4 3"
+          shapeRendering="crispEdges"
+          className="absolute -right-2 -bottom-2"
+        >
+          {DIRT_ICON.map((row, r) =>
+            row.map((filled, c) =>
+              filled ? <rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} fill="var(--lcd-mid)" /> : null,
+            ),
+          )}
+        </svg>
+      )}
+
+      {asleep && (
+        <span className="font-pixel absolute -top-4 right-0 text-[10px]" style={{ color: 'var(--lcd-fg)' }}>
+          Zzz
+        </span>
+      )}
     </div>
+  );
+}
+
+const EGG: number[][] = [
+  [0, 0, 1, 1, 1, 0, 0],
+  [0, 1, 1, 1, 1, 1, 0],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1],
+  [0, 1, 1, 1, 1, 1, 0],
+  [0, 0, 1, 1, 1, 0, 0],
+];
+const EGG_SHINE = new Set(['1-2']);
+
+export function EggSprite() {
+  const cellPx = 14;
+  const size = cellPx * 7;
+
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 7 7"
+      shapeRendering="crispEdges"
+      className="animate-float"
+    >
+      {EGG.map((row, r) =>
+        row.map((filled, c) => {
+          if (!filled) return null;
+          const isShine = EGG_SHINE.has(`${r}-${c}`);
+          return (
+            <rect
+              key={`${r}-${c}`}
+              x={c}
+              y={r}
+              width={1}
+              height={1}
+              fill={isShine ? 'var(--lcd-bg)' : 'var(--lcd-fg)'}
+            />
+          );
+        }),
+      )}
+    </svg>
   );
 }
