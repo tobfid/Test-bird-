@@ -56,6 +56,10 @@ Diesen Link kannst du dann einfach an deine Familie schicken – kein Login, kei
 
 **Für die schnelle Weitergabe aufs Smartphone:** Der „📲 Teilen“-Button oben in der App zeigt einen QR-Code der aktuellen Adresse – einfach mit der Handykamera scannen, um die App direkt zu öffnen (kein Ausdrucken von Links nötig). Über das Browser-Menü „Zum Startbildschirm hinzufügen“ lässt sich die App danach wie eine normale App-Kachel auf dem Homescreen ablegen.
 
+## 🥚 Bonus: Tamagotchi
+
+Im selben Projekt liegt zusätzlich ein eigenständiges kleines Tamagotchi-Spiel – ein virtuelles Haustier zum Füttern, Bespielen, Waschen und Großziehen, komplett unabhängig von der Vogel-App. Es teilt sich lediglich das Deployment: Nach dem Bauen ist es unter derselben Pages-URL plus `/tamagotchi.html` erreichbar (z. B. `https://<benutzername>.github.io/<repo-name>/tamagotchi.html`) und kann als eigener Link separat verschickt werden, etwa an Familie. Der Spielstand (Name, Alter, Statuswerte) wird lokal auf dem jeweiligen Gerät gespeichert und verfällt realistisch weiter, auch wenn die Seite länger nicht geöffnet wird.
+
 ## Technik
 
 - [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vite.dev/)

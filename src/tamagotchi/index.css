@@ -1,0 +1,100 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  /* Waldgrün – Primärfarbe */
+  --color-brand-50: #f1f9f1;
+  --color-brand-100: #dcf1de;
+  --color-brand-200: #b9e3bd;
+  --color-brand-300: #8ccf92;
+  --color-brand-400: #5cb565;
+  --color-brand-500: #3a9944;
+  --color-brand-600: #2b7d35;
+  --color-brand-700: #23642c;
+  --color-brand-800: #1f4f26;
+  --color-brand-900: #1b4121;
+  --color-brand-950: #0c2410;
+
+  /* Warmes Sonnengelb – Akzentfarbe */
+  --color-sun-50: #fffbeb;
+  --color-sun-100: #fef3c7;
+  --color-sun-200: #fde68a;
+  --color-sun-300: #fcd34d;
+  --color-sun-400: #fbbf24;
+  --color-sun-500: #f59e0b;
+  --color-sun-600: #d97706;
+  --color-sun-700: #b45309;
+  --color-sun-800: #92400e;
+
+  /* Warmes Creme statt kühlem Grau – Hintergrund */
+  --color-cream-50: #fdfbf6;
+  --color-cream-100: #f8f3e8;
+  --color-cream-900: #171a14;
+  --color-cream-950: #0f120c;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  @apply bg-cream-50 text-stone-900 dark:bg-cream-950 dark:text-stone-100;
+}
+
+#tamagotchi-root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@layer utilities {
+  .tap-shrink {
+    transition: transform 0.1s ease-out;
+  }
+  .tap-shrink:active {
+    transform: scale(0.96);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 3.2s ease-in-out infinite;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-bubble-in {
+  animation: bubble-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
